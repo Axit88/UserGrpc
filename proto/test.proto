@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package main ;
+
+option go_package = "./";
+
+service TestApi{
+    rpc AddUser (AddUserInput) returns (AddUserOutput) {}
+    rpc GetUser (GetUserInput) returns (GetUserOutput) {}
+    rpc DeleteUser (DeleteUserInput) returns (DeleteUserOutput) {}
+    rpc UpdateUser (UpdateUserInput) returns (UpdateUserOutput) {}
+}
+
+message AddUserInput {
+    string UserName = 1;
+    string UserId = 2;
+}
+
+message AddUserOutput {
+    string message = 1;
+}
+
+message GetUserInput {
+    string UserId = 4;
+}
+
+message GetUserOutput {
+    string UserName = 1;
+    string UserId = 2;
+}
+
+message DeleteUserInput{
+    string UserId = 1;
+}
+
+message DeleteUserOutput{
+    string message = 1;
+}
+
+message UpdateUserInput{
+    string UserName = 1;
+    string UserId = 2;
+}
+
+message UpdateUserOutput{
+    string message = 1;
+}
