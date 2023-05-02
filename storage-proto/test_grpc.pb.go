@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type TestApiClient interface {
 	AddUser(ctx context.Context, in *AddUserInput, opts ...grpc.CallOption) (*AddUserOutput, error)
 	GetUser(ctx context.Context, in *GetUserInput, opts ...grpc.CallOption) (*GetUserOutput, error)
+	DeleteUser(ctx context.Context, in *DeleteUserInput, opts ...grpc.CallOption) (*DeleteUserOutput, error)
+	UpdateUser(ctx context.Context, in *UpdateUserInput, opts ...grpc.CallOption) (*UpdateUserOutput, error)
 }
 
 type testApiClient struct {
@@ -52,12 +54,32 @@ func (c *testApiClient) GetUser(ctx context.Context, in *GetUserInput, opts ...g
 	return out, nil
 }
 
+func (c *testApiClient) DeleteUser(ctx context.Context, in *DeleteUserInput, opts ...grpc.CallOption) (*DeleteUserOutput, error) {
+	out := new(DeleteUserOutput)
+	err := c.cc.Invoke(ctx, "/main.TestApi/DeleteUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *testApiClient) UpdateUser(ctx context.Context, in *UpdateUserInput, opts ...grpc.CallOption) (*UpdateUserOutput, error) {
+	out := new(UpdateUserOutput)
+	err := c.cc.Invoke(ctx, "/main.TestApi/UpdateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TestApiServer is the server API for TestApi service.
 // All implementations must embed UnimplementedTestApiServer
 // for forward compatibility
 type TestApiServer interface {
 	AddUser(context.Context, *AddUserInput) (*AddUserOutput, error)
 	GetUser(context.Context, *GetUserInput) (*GetUserOutput, error)
+	DeleteUser(context.Context, *DeleteUserInput) (*DeleteUserOutput, error)
+	UpdateUser(context.Context, *UpdateUserInput) (*UpdateUserOutput, error)
 	mustEmbedUnimplementedTestApiServer()
 }
 
@@ -70,6 +92,12 @@ func (UnimplementedTestApiServer) AddUser(context.Context, *AddUserInput) (*AddU
 }
 func (UnimplementedTestApiServer) GetUser(context.Context, *GetUserInput) (*GetUserOutput, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedTestApiServer) DeleteUser(context.Context, *DeleteUserInput) (*DeleteUserOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedTestApiServer) UpdateUser(context.Context, *UpdateUserInput) (*UpdateUserOutput, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
 func (UnimplementedTestApiServer) mustEmbedUnimplementedTestApiServer() {}
 
@@ -120,6 +148,42 @@ func _TestApi_GetUser_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TestApi_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserInput)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TestApiServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.TestApi/DeleteUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TestApiServer).DeleteUser(ctx, req.(*DeleteUserInput))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TestApi_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserInput)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TestApiServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.TestApi/UpdateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TestApiServer).UpdateUser(ctx, req.(*UpdateUserInput))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TestApi_ServiceDesc is the grpc.ServiceDesc for TestApi service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +198,14 @@ var TestApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUser",
 			Handler:    _TestApi_GetUser_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _TestApi_DeleteUser_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _TestApi_UpdateUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
